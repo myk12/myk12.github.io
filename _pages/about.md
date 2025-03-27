@@ -51,12 +51,6 @@ redirect_from:
 
 I am currently pursuing my master's degree at [Fudan University](https://www.fudan.edu.cn/en/) under the supervision of Professor [Yang Chen](https://chenyang03.wordpress.com/). Prior to this, I earned my Bachelor's degree from the School of Computer Science and Technology at [Dalian University of Technology](https://www.dlut.edu.cn/) in 2020.
 
-Following my graduation, from June 2020 to June 2022, I served as an embedded software development engineer in [TP-LINK](https://www.tp-link.com/en/)'s Consumer Electronics R&D Department. During my time there, I was responsible for the development and maintenance of the [TP-LINK NVR-1008H](https://www.tp-link.com/en/business-networking/vigi-network-video-recorder/vigi-nvr1008h/) (Network Video Recorder) device, as well as the establishment of the TP-LINK robot operating system platform.
-
-Since September 2022, I have been involved in research at the School of Computer Science at Fudan University, with a focus on network systems. In June to August 2024, I went to Max Planck Institute for Informatics in Germany, where I joined the [Network and Cloud Systems group](https://www.mpi-inf.mpg.de/departments/network-and-cloud-systems) led by Professor [Yiting Xia](https://sites.google.com/view/yitingxia) as a research intern. During this period, I implemented a high-precision time synchronization protocol on an FPGA-based Smart NIC.
-
-I have a broad range of research interests, primarily focused on distributed and network systems, including network protocols and architectures, network measurement and simulation, as well as Networks for AI.
-
 # 📄 Publications
 
 ***Sensys 2024 - ACM Conference on Embedded Networked Sensor Systems, Hangzhou, China, 2024***
@@ -73,14 +67,6 @@ Simulator for Internet of Things Scenarios.
 [SocialCache: A Pervasive Social-Aware Caching Strategy for Self-Operated Content Delivery Networks of Online Social Networks.](https://doi.org/10.1109/ICC45041.2023.10279588)
 
 Tiancheng Guo, **Yuke Ma**, Mengying Zhou, Xin Wang, Jun Wu, Yang Chen.
-
----
-
-***Information, 2022, Volume 13***
-
-[DNS Request Log Analysis of Universities in Shanghai: A CDN Service Provider’s Perspective (mdpi.com)](https://www.mdpi.com/2078-2489/13/11/542)
-
-Zhiyang Sun, Tiancheng Guo, Shiyu Luo, Yingqiu Zhuang, **Yuke Ma**, Yang Chen, Xin Wang.
 
 ---
 
@@ -130,8 +116,7 @@ Zhiyang Sun, Tiancheng Guo, Shiyu Luo, Yingqiu Zhuang, **Yuke Ma**, Yang Chen, X
 <div style="display: flex; align-items: center;">
     <img src="../images/tplink.png" alt="tplink" width="150" height="100">
         <blockquote>
-            Consumer Electronics R&D Department, Intelligent Security Equipment Group (2020-2021)<br>
-            Consumer Electronics R&D Department, Robotics Group (2021-2022)
+            Consumer Electronics R&D Department<br>
         </blockquote>
 </div>
 
@@ -145,56 +130,7 @@ Zhiyang Sun, Tiancheng Guo, Shiyu Luo, Yingqiu Zhuang, **Yuke Ma**, Yang Chen, X
   <li>Dalian University of Technology Excellent Scholarship, 2018</li>
 </ul>
 
-# 🛠️ Skills
-
-- **Programming Languages**: C/C++, Python, Shell, Go, Verilog
-
-<div class="image-container">
-  <img src="../images/The_C_Programming_Language_logo.svg.png" alt="C/C++" width="50" height="50">
-  <img src="../images/ISO_C++_Logo.svg.png" alt="C/C++" width="50" height="50">
-  <img src="../images/Gnu-bash-logo.svg.png" alt="C/C++" width="100" height="50">
-  <img src="../images/Python-logo-notext.svg.png" alt="Python" width="50" height="50">
-  <img src="../images/215px-Go_Logo_Blue.svg.png" alt="Go" width="50" height="50">
-  <img src="../images/verilog.jpg" alt="Verilog" width="50" height="50">
-</div>
-
-<div class="skill-container">
-I have more than three years of experience building large software systems using C/C++, so I am proficient in both C/C++ and shell scripting languages. I have also used Python for network measurement and simulation, as well as Go for cloud-native development. Additionally, I have experience with Verilog for FPGA development.
-</div>
-
-- **Operating Systems**: Linux, Docker, Kubernetes
-<div class="image-container">
-  <img src="../images/Tux.svg.png" alt="Tux" width="50" height="50">
-  <img src="../images/180px-Heckert_GNU_white.svg.png" alt="ZMap" width="50" height="50">
-  <img src="../images/Cmake.svg.png" alt="ZMap" width="50" height="50">
-  <img src="../images/Docker_logo.svg.png" alt="Docker" width="100" height="50">
-  <img src="../images/Kubernetes_logo_without_workmark.svg.png" alt="k8s" width="50" height="50">
-  <img src="../images/Yocto_Project_logo.svg.png" alt="yocoto" width="100" height="50">
-</div>
-
-<div class="skill-container">
-
-I have two years of experience in embedded software engineering, during which I was responsible for Linux system porting and build processes, as well as advanced programming and project construction in the Linux environment. I have also used Docker and Kubernetes for cloud-native development.
-
-</div>
-
-- **Network Tools and Projects**:  network simulator-3 (ns-3), zmap, tcpdump, libp2p, IPFS
-
-<div class="image-container">
-  <img src="../images/ns-3-notext.png" alt="ns-3" width="100" height="50">
-  <img src="../images/ZMap_logo_from_GitHub.png" alt="ZMap" width="100" height="50">
-  <img src="../images/Tcpdump&libpcap.svg.png" alt="tcpdump" width="200" height="100">
-  <img src="../images/logo_small.png" alt="libp2p" width="50" height="50">
-  <img src="../images/Ipfs-logo-1024-ice-text.png" alt="ipfs" width="50" height="50">
-</div>
-
-<div class="skill-container">
-I am using ns-3 to build a simulation platform for future Internet architectures. As a result, I have more than two years of experience of using ns-3. Since it's design follows the specifications of the Linux network protocol stack, I also have a good understanding of Linux kernel networking subsystems. Additionally, I integrated an MPTCP protocol scanning module into the zmap tool, enabling me to scan and measure the entire IPv4 address space for MPTCP servers. This experience has provided me with a solid understanding of the libpcap library, which is at the core of zmap and tcpdump.<br>
-<br>
-I am currently very interested in IPFS, particularly its core library, libp2p, and I am conducting research related to it.
-</div>
-
 - **Languages**: English (Fluent), Japanese (Intermediate)
 <div class="skill-container">
-I can speak English (CET-6 score of 555) and Japanese (JLPT N2 level).
+I speak English (CET-6 score of 555) and Japanese (JLPT N2 level).
 </div>
