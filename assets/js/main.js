@@ -1,5 +1,5 @@
-// Hero 动态文字
-const words = ["Network & Distributed Systems Researcher", "Distributed Systems & AI", "Networking Protocols"];
+// Hero Dynamic Text
+const words = ["Network & Distributed System", "Data Center Network", "Optical Circuit Switching"];
 let i = 0;
 setInterval(() => {
   const el = document.getElementById("dynamic");
@@ -7,7 +7,7 @@ setInterval(() => {
   i++;
 }, 2000);
 
-// 动画技能条
+// Skill Bar Animation
 window.addEventListener("load", () => {
   document.querySelectorAll(".skill-bar").forEach(bar => {
     const level = bar.getAttribute("data-level");
