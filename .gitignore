@@ -1,0 +1,36 @@
+# ----------------------------------------------------------------
+# .gitignore for Jekyll Projects
+# ----------------------------------------------------------------
+
+# 1. Jekyll
+# The generated static site. This is the most important folder to ignore.
+/_site/
+
+# Jekyll cache files and metadata
+.jekyll-cache/
+.jekyll-metadata
+
+# Sass cache (if you use Sass in the future)
+.sass-cache/
+
+# 2. Bundler (Ruby Dependencies)
+# Gems installed locally using `bundle install --local path vendor/bundle`
+# Good to include even if you don't install locally.
+/vendor/bundle/
+
+# Bundler local configuration
+.bundle/
+
+# 3. Operating System / Editor Files
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# VS Code Editor
+.vscode/
+
+# 4. Logs and Temporary Files
+*.log
+*.tmp
