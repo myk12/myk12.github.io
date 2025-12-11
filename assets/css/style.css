@@ -1,100 +1,214 @@
-/* 全局重置 */
-body, h1,h2,h3,p,ul,li,a {
-  margin: 0;
-  padding: 0;
-  font-family: 'Roboto', sans-serif;
+/* ===========================
+   1. Variables - My Theme Colors
+   =========================== */
+:root {
+  /* personal colors */
+  --primary: #006C66;   /* MPI Green - used for sidebar and headings */
+  --secondary: #4B5563; /* Cool Grey - used for secondary text */
+  --accent: #3B82F6;    /* Bright Blue - used for highlights and progress bars */
+  --bg: #f9f9f9;        /* Overall page background */
+  --text: #111;         /* Main text color */
+  
+  /* TypeIt cursor color (using Accent color here for consistency) */
+  --ti-cursor-color: var(--accent);
 }
 
-:root {
-  --primary: #006C66;
-  --secondary: #4B5563;
-  --accent: #3B82F6;
-  --bg: #f9f9f9;
-  --text: #111;
+/* ===========================
+   2. Reset & Basics
+   =========================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
+  font-family: 'Roboto', sans-serif; /* Your specified font */
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.6;
 }
 
-/* header */
-header {
-  background-color: var(--primary);
-  color: white;
-  padding: 20px;
-  text-align: center;
-}
-
-nav a {
-  color: white;
+a {
   text-decoration: none;
-  margin: 0 10px;
+  color: var(--primary); /* Links in main text use primary color by default */
+  transition: all 0.2s ease;
 }
 
-/* hero */
-.hero {
-  padding: 60px 20px;
-  text-align: center;
+a:hover {
+  color: var(--accent); /* Turns blue on hover */
+  text-decoration: underline;
 }
 
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 10px;
+/* ===========================
+   3. Layout Structure
+   =========================== */
+.layout {
+  display: flex;       /* Enable left-right columns */
+  min-height: 100vh;   /* Full screen height */
 }
 
-.hero p {
-  font-size: 1.2rem;
-  color: var(--secondary);
+/* ===========================
+   4. Sidebar - Using your --primary green
+   =========================== */
+.sidebar {
+  width: 300px;
+  background-color: var(--primary); /* Key change: sidebar becomes MPI green */
+  color: white;        /* White text on green background */
+  padding: 40px 30px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: left;    /* Left-align sidebar text for professionalism */
 }
 
-/* section */
-section {
-  padding: 40px 20px;
-  max-width: 900px;
-  margin: auto;
+.sidebar .avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  border: 4px solid rgba(255, 255, 255, 0.2); /* Semi-transparent border */
+}
+
+.sidebar h2 {
+  color: white; /* Override global h2 color, must be white here */
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+
+.sidebar .subtitle {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8); /* Slightly transparent white */
+  margin-bottom: 30px;
+  font-weight: 300;
+}
+
+/* Sidebar links */
+.sidebar a {
+  color: white;
+  opacity: 0.7;
+  text-decoration: none;
+}
+.sidebar a:hover {
+  color: white;
+  opacity: 1;
+  text-decoration: none; /* Sidebar links don't need underline, highlight only */
+}
+
+/* Sidebar navigation */
+.sidebar-extra nav a {
+  display: block;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Divider line */
+  font-size: 1.1rem;
+}
+
+.sidebar .personal-info {
+  list-style: none;
+  font-size: 0.9rem;
+  margin-bottom: 40px;
+}
+.sidebar .personal-info li {
+  margin-bottom: 8px;
+}
+
+/* ===========================
+   5. Content Area  
+   =========================== */
+.content-area {
+  flex-grow: 1;
+  background-color: white; /* Content area remains white for cleanliness */
+  padding: 60px 80px;
+}
+
+/* Content area headings */
+h1, h2, h3 {
+  color: var(--primary); /* Using MPI green */
+  font-weight: 700;
 }
 
 h2 {
-  color: var(--primary);
+  border-bottom: 2px solid var(--bg); /* Add a light gray line under headings */
+  padding-bottom: 10px;
+  margin-top: 40px;
   margin-bottom: 20px;
 }
 
-/* skill bars */
-.skill {
-  margin: 15px 0;
-}
-
-.skill-name {
-  font-weight: bold;
-}
-
-.skill-bar {
-  width: 0;
-  height: 12px;
-  background-color: var(--accent);
-  transition: width 1.5s;
-  margin-top: 5px;
-}
-
-/* card for projects, publications */
+/* ===========================
+   6. Components Styles (Cards & Skills)
+   =========================== */
+/* Card style optimization */
 .card {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 15px;
-  margin: 10px 0;
-  transition: transform 0.3s;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid var(--primary); /* Add a green bar on the left for design */
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-/* footer */
-footer {
-  text-align: center;
-  padding: 20px;
-  margin-top: 40px;
-  border-top: 1px solid #ddd;
+/* Skill Bar */
+.skill {
+  margin: 15px 0;
+}
+.skill-name {
+  font-weight: bold;
+  color: var(--secondary);
+}
+.skill-bar {
+  height: 8px;
+  background-color: #e5e7eb; /* Track color */
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+.skill-bar-fill {
+  display: block;
+  height: 100%;
+  background-color: var(--accent); /* Using your blue Accent */
+  width: 0; /* JS controls width */
+  transition: width 1.5s ease-in-out;
+}
+
+/* ===========================
+   7. Typewriter Area (TypeIt)
+   =========================== */
+#type-text {
+  min-height: 120px;
+  font-size: 1.1rem;
+  color: var(--secondary); /* Self-introduction in dark gray, not glaring */
+}
+/* Your CSS defines ti-cursor-color, TypeIt will automatically read it */
+
+/* ===========================
+   8. Responsive Adaptation (Mobile)
+   =========================== */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    text-align: center;
+    padding: 30px 20px;
+    align-items: center; /* Center content on mobile */
+  }
+
+  .sidebar-extra nav a {
+    display: inline-block; /* Arrange navigation horizontally on mobile */
+    margin: 0 10px;
+    border-bottom: none;
+  }
+
+  .content-area {
+    padding: 30px 20px;
+  }
 }
