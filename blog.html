@@ -1,33 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog - Yuke Ma</title>
-<link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
+---
+layout: blog-layout
+title: Blog
+permalink: /blog.html
+---
 
-<header>
-  <nav>
-    <a href="index.html">Home</a> |
-    <a href="about.html">About</a> |
-    <a href="blog.html">Blog</a> |
-    <a href="reading-list.html">Reading List</a>
-  </nav>
-</header>
-
-<section class="blog-posts">
-  <h2>My Posts</h2>
-  <ul>
-    <li><a href="_posts/2025-09-03-my-first-blog.md">My First Blog Post - Sep 03, 2025</a></li>
-    <!-- Add more posts here -->
-  </ul>
-</section>
-
-<footer>
-  <p>Contact: youremail@example.com</p>
-</footer>
-
-</body>
-</html>
+{% for post in site.posts %}
+  <article class="post-item">
+      <div class="post-meta">{{ post.date | date: "%B %d, %Y" }}</div>
+      <a href="{{ post.url | relative_url }}" class="post-link">{{ post.title }}</a>
+      <div class="post-excerpt">
+          {{ post.excerpt | strip_html | truncatewords: 30 }}
+      </div>
+  </article>
+{% endfor %}

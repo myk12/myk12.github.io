@@ -97,55 +97,53 @@ The TX Scheduler exposes several configuration registers via the AXI-Lite interf
 ## 5. Timing and Performance
 The TX Scheduler is designed to operate at high speeds, supporting line-rate transmission for various Ethernet standards. It employs pipelining and buffering techniques to ensure minimal latency and high throughput, making it suitable for demanding networking applications.
 
-    style TXS fill:#f9f,stroke:#333,stroke-width:4px
+```python3
+
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def tx_scheduler_info():
+    logger.info("TX Scheduler module initialized.")
+    # Additional initialization code can go here
+    return
+
 ```
+
+```mermaid
+
+graph TD
     subgraph "AXI-Lite Slave Interface"
         direction LR
-        S_AW[s_axil_aw...] --> QM
-        S_W[s_axil_w...] --> QM
-        S_AR[s_axil_ar...] --> QM
-        S_RREADY[s_axil_rready] --> QM
-        S_BREADY[s_axil_bready] --> QM
-        QM --> S_AWREADY[s_axil_awready]
-        QM --> S_WREADY[s_axil_wready]
-        QM --> S_ARREADY[s_axil_arready]
-        QM --> S_R[s_axil_r...]
-        QM --> S_B[s_axil_b...]
+        S_AW[s_axil_aw...] --> TXS
+        S_W[s_axil_w...] --> TXS
+        S_AR[s_axil_ar...] --> TXS
+        S_RREADY[s_axil_rready] --> TXS
+        S_BREADY[s_axil_bready] --> TXS
+        TXS --> S_AWREADY[s_axil_awready]
+        TXS --> S_WREADY[s_axil_wready]
+        TXS --> S_ARREADY[s_axil_arready]
+        TXS --> S_R[s_axil_r...]
+        TXS --> S_B[s_axil_b...]
     end
-
-    subgraph "Dequeue Request (In)"
+    subgraph "Transmit Request (In)"
         direction TB
-        REQ[s_axis_dequeue_req_...] --> QM
+        REQ[s_axis_tx_req_...] --> TXS
     end
-
-    subgraph "Dequeue Response (Out)"
+    subgraph "Transmit Response (Out)"
         direction TB
-        QM --> RESP[m_axis_dequeue_resp_...]
-        RESP_READY[m_axis_dequeue_resp_ready] --> QM
+        TXS --> RESP[m_axis_tx_resp_...]
+        RESP_READY[m_axis_tx_resp_ready] --> TXS
     end
-
-    subgraph "Dequeue Commit (In)"
-        direction TB
-        COMMIT[s_axis_dequeue_commit_...] --> QM
-        QM --> COMMIT_READY[s_axis_dequeue_commit_ready]
-    end
-
-    subgraph "Doorbell (Out)"
-        direction TB
-        QM --> DB[m_axis_doorbell_...]
-    end
-
     subgraph "Control"
         direction TB
-        CLK[clk] --> QM
-        RST[rst] --> QM
-        ENABLE[enable] --> QM
+        CLK[clk] --> TXS
+        RST[rst] --> TXS
+        ENABLE[enable] --> TXS
     end
+    TXS(tx_scheduler)
 
-    QM(queue_manager)
-
-    style QM fill:#f9,stroke:#333,stroke-width:4px
-``` 
+```
 
 The `tx_scheduler` module is a critical component of the Corundum FPGA NIC architecture, responsible for managing the transmission of packets from the FPGA to the host system. It interfaces with the AXI-Lite bus for configuration and control, and it handles transmit requests and responses through dedicated streaming interfaces. Its primary functions include:
 - Receiving transmit requests from the FPGA logic.

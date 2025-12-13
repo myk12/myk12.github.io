@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ '/assets/css/doc.css' | relative_url }}">
+</head>
+<body>
+
+<div class="doc-container">
+  
+  <aside class="doc-sidebar">
+    <div class="sidebar-header">
+      <a href="{{ '/' | relative_url }}">← Back Home</a>
+      <h3>Knowledge Base</h3>
+    </div>
+
+    <div class="sidebar-content">
+  
+  {% assign wiki_docs = site.wiki %}
+  
+  {% assign categories = wiki_docs | map: 'category' | uniq | sort %}
+  
+  {% for category in categories %}
+    <div class="category-group">
+      <div class="category-title">
+        <i class="far fa-folder"></i> {{ category | capitalize }}
+      </div>
+      
+      <ul class="category-posts">
+        {% for doc in wiki_docs %}
+          {% if doc.category == category %}
+            <li>
+              <a href="{{ doc.url | relative_url }}" class="{% if doc.url == page.url %}active{% endif %}">
+                {{ doc.title }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+
+</div>
+
+  </aside>
+
+  <main class="doc-main">
+    <header class="doc-header">
+      <h1>{{ page.title }}</h1>
+      <div class="doc-meta">
+        <span><i class="far fa-calendar"></i> {{ page.date | date: "%Y-%m-%d" }}</span>
+        {% if page.categories.size > 0 %}
+          <span><i class="far fa-folder-open"></i> {{ page.categories | join: ' / ' }}</span>
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="doc-content">
+      {{ content }}
+    </div>
+  </main>
+</div>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  document.addEventListener('DOMContentLoaded', async function () {
+    mermaid.initialize({ startOnLoad: false, theme: 'default' });
+    const mermaidWrappers = document.querySelectorAll('.language-mermaid');
+    for (const wrapper of mermaidWrappers) {
+      const content = wrapper.textContent.trim();
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = content;
+      wrapper.parentNode.replaceChild(div, wrapper);
+    }
+    await mermaid.run();
+  });
+</script>
+
+</body>
+</html>

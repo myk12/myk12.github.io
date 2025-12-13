@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} | Wiki</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ '/assets/css/doc.css' | relative_url }}">
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        document.addEventListener('DOMContentLoaded', async function () {
+            mermaid.initialize({ startOnLoad: false, theme: 'default' });
+            const mermaidWrappers = document.querySelectorAll('.language-mermaid');
+            for (const wrapper of mermaidWrappers) {
+                const content = wrapper.textContent.trim();
+                const div = document.createElement('div');
+                div.className = 'mermaid';
+                div.textContent = content;
+                wrapper.parentNode.replaceChild(div, wrapper);
+            }
+            await mermaid.run();
+        });
+    </script>
+</head>
+
+<body>
+
+    <div class="wiki-layout">
+
+        <aside class="wiki-sidebar">
+            <div class="sidebar-header">
+                <a href="{{ '/' | relative_url }}" class="home-link"><i class="fas fa-arrow-left"></i> Back Home</a>
+                <h3><i class="fas fa-book-open"></i> Knowledge Base</h3>
+            </div>
+
+            <div class="sidebar-tree">
+                {% assign wiki_groups = site.wiki | group_by_exp: "item", "item.url | remove_first: '/wiki/' | split:
+                '/' | first" | sort: "name" %}
+
+                {% for group in wiki_groups %}
+                {% unless group.name contains '.html' %}
+
+                <div class="tree-folder">
+                    <div class="folder-title">
+                        <i class="far fa-folder"></i> {{ group.name | replace: '-', ' ' | capitalize }}
+                    </div>
+
+                    <ul class="folder-files">
+                        {% assign items = group.items | sort: "title" %}
+                        {% for doc in items %}
+                        <li>
+                            <a href="{{ doc.url | relative_url }}"
+                                class="file-link {% if doc.url == page.url %}active{% endif %}">
+                                {{ doc.title }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endunless %}
+                {% endfor %}
+
+            </div>
+        </aside>
+
+        <main class="wiki-content-area">
+            <div class="wiki-breadcrumbs">
+                <span>Wiki</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>{{ page.url | remove_first: '/wiki/' | split: '/' | first | replace: '-', ' ' | capitalize
+                    }}</span>
+            </div>
+
+            <article class="wiki-article">
+                <header>
+                    <h1>[{{ page.conference }}] {{ page.title }}</h1>
+                    <div class="meta">
+                        <i class="far fa-calendar-alt"></i> Last updated: {{ page.date | date: "%Y-%m-%d" }}
+
+                        {% if page.tags.size > 0 %}
+                        <span class="meta-separator">•</span>
+                        <div class="tag-list">
+                            {% for tag in page.tags %}
+                            <span class="wiki-tag">#{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </header>
+
+                <div class="content-body">
+                    {{ content }}
+                </div>
+            </article>
+        </main>
+
+    </div>
+
+</body>
+
+</html>

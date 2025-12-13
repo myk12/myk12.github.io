@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title | default: 'Wiki' }}</title>
+  <link rel="stylesheet" href="/assets/css/doc.css">
+  {% seo %}
+</head>
+<body>
+  <header>
+    <h1>{{ site.title }}</h1>
+    <nav>
+      <a href="/index.html">Home</a> |
+      <a href="/blog.html">Blog</a> |
+      <a href="/wiki.html" aria-current="page">Wiki</a>
+    </nav>
+  </header>
+  <main>
+    <h2>Wiki</h2>
+    <ul>
+      {% for item in site.pages %}
+        {% if item.path contains '_wiki' %}
+        <li><a href="{{ item.url }}">{{ item.title | default: item.name }}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </main>
+  <footer>
+    <p>&copy; {{ site.time | date: '%Y' }} {{ site.title }}</p>
+  </footer>
+</body>
+</html>

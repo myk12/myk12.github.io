@@ -3,7 +3,22 @@ email: "yukema@mpi-inf.mpg.de"
 description: "PhD Candidate @ Max Planck Institute | AI, Networks & LLM Systems"
 baseurl: ""
 url: "https://yukema.github.io"
-theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+
+collections:
+  # wiki section configuration
+  wiki:
+    output: true            # allow pages in this collection to be generated
+    permalink: /wiki/:path/ # define wiki URL format
+    
+  # define posts (your blog) URL format (optional, recommended for clarity)
+  posts:
+    permalink: /blog/:year/:month/:day/:title/
+
+# Global exclude files that do not need to be compiled
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock

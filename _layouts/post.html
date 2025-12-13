@@ -1,0 +1,17 @@
+---
+layout: blog-layout
+---
+
+<article>
+    <header class="article-header">
+        <h1 class="article-title">{{ page.title }}</h1>
+        <div class="article-date">
+            <i class="far fa-calendar"></i> {{ page.date | date: "%B %d, %Y" }} 
+            {% if page.categories %} • {{ page.categories | join: ', ' }} {% endif %}
+        </div>
+    </header>
+
+    <div class="article-content">
+        {{ content }}
+    </div>
+</article>

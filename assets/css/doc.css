@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* 全局去边距 */
+body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background: #fff; height: 100vh; overflow: hidden; /* 禁止整个页面滚动 */ }
+a { text-decoration: none; color: inherit; }
+* { box-sizing: border-box; }
+
+/* 左右分栏布局容器 */
+.wiki-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ==================
+   左侧 Sidebar 样式
+   ================== */
+.wiki-sidebar {
+  width: 280px;
+  background-color: #f8f9fa; /* 浅灰背景 */
+  border-right: 1px solid #e1e4e8;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid #e1e4e8;
+  background: #f8f9fa;
+}
+.home-link { font-size: 0.85rem; color: #666; margin-bottom: 10px; display: block; }
+.home-link:hover { color: #006C66; }
+.sidebar-header h3 { margin: 0; font-size: 1.1rem; color: #111; display: flex; align-items: center; gap: 8px; }
+
+.sidebar-tree {
+  flex: 1;
+  overflow-y: auto; /* 侧边栏独立滚动 */
+  padding: 20px 15px;
+}
+
+/* 文件夹样式 */
+.tree-folder { margin-bottom: 15px; }
+.folder-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  padding-left: 8px; /* 稍微缩进 */
+}
+
+/* 文件列表样式 */
+.folder-files { list-style: none; padding: 0; margin: 0; }
+.folder-files li { margin-bottom: 2px; }
+
+.file-link {
+  display: block;
+  padding: 6px 12px;
+  font-size: 0.95rem;
+  color: #4b5563;
+  border-radius: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;      /* 防止换行 */
+  overflow: hidden;         /* 超出隐藏 */
+  text-overflow: ellipsis;  /* 超出显示省略号 */
+}
+
+.file-link:hover {
+  background-color: #e5e7eb;
+  color: #111;
+}
+
+/* 当前激活的文章高亮 */
+.file-link.active {
+  background-color: #e6fffa; /* 浅绿色背景 */
+  color: #006C66;            /* 深绿色文字 */
+  font-weight: 600;
+}
+
+/* ==================
+   右侧 Content 样式
+   ================== */
+.wiki-content-area {
+  flex: 1;
+  overflow-y: auto; /* 内容区独立滚动 */
+  padding: 40px 60px;
+  background: #fff;
+}
+
+/* 面包屑 */
+.wiki-breadcrumbs {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 文章样式 */
+.wiki-article { max-width: 900px; margin: 0 auto; } /* 限制最大宽度，阅读更舒适 */
+.wiki-article h1 { font-size: 2.2rem; color: #111; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+.wiki-article .meta { color: #999; font-size: 0.9rem; margin-bottom: 40px; font-family: 'Courier New', monospace; }
+
+/* 正文排版 (类似 Typora/Obsidian) */
+.content-body { line-height: 1.7; color: #2d3748; font-size: 1.05rem; }
+.content-body h2 { margin-top: 40px; font-size: 1.5rem; color: #1a202c; border-bottom: 1px solid #edf2f7; padding-bottom: 8px; }
+.content-body code { background: #edf2f7; padding: 2px 5px; border-radius: 4px; color: #c026d3; font-family: 'Courier New', monospace; font-size: 0.9em; }
+.content-body pre { background: #f7fafc; padding: 15px; border-radius: 8px; overflow-x: auto; border: 1px solid #e2e8f0; }
+.content-body blockquote { border-left: 4px solid #006C66; background: #f0fdfa; margin: 20px 0; padding: 15px 20px; color: #4a5568; }
+.content-body img { max-width: 100%; border-radius: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: 20px 0; }
+
+/* 手机端适配 */
+@media (max-width: 768px) {
+  .wiki-layout { flex-direction: column; overflow: auto; }
+  .wiki-sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #ddd; max-height: 300px; }
+  .wiki-content-area { padding: 20px; }
+}

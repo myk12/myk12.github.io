@@ -267,3 +267,164 @@ h2 {
   background: white;
   color: var(--accent);
 }
+
+/* ===========================
+   学术主页组件升级包
+   =========================== */
+/* ===========================
+   主页美化专用样式 (Home Polish)
+   =========================== */
+
+/* 调整每个 Section 的间距 */
+.section-group {
+  margin-bottom: 50px;
+}
+
+/* 统一标题样式 */
+.section-group h2 {
+  font-size: 1.5rem;
+  color: var(--primary, #006C66); /* 使用主色 */
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f1f5f9; /* 标题下加一条淡淡的线 */
+}
+
+/* ---------------------------
+   1. News 列表样式 (通知条)
+   --------------------------- */
+/* 选中 id="news" 后面的 ul */
+h2#news + ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+h2#news + ul li {
+  position: relative;
+  background-color: #f0fdfa; /* 极淡的绿色背景 */
+  border-left: 4px solid var(--primary, #006C66); /* 左侧强调线 */
+  padding: 12px 18px;
+  margin-bottom: 10px;
+  border-radius: 4px; /* 轻微圆角 */
+  font-size: 0.95rem;
+  color: #333;
+  transition: transform 0.2s ease;
+}
+
+h2#news + ul li:hover {
+  transform: translateX(5px); /* 鼠标悬停时右移 */
+  background-color: #e6fffa;  /* 颜色稍微变深 */
+}
+
+h2#news + ul li strong {
+  color: var(--primary, #006C66);
+  margin-right: 8px;
+}
+
+/* ---------------------------
+   2. Publications 卡片样式
+   --------------------------- */
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid var(--primary, #006C66); /* 左侧绿线呼应 */
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px); /* 悬停上浮 */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); /* 投影 */
+  border-color: var(--primary, #006C66);
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+.card p {
+  margin-bottom: 15px;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+/* 会议名称小标签 (Badge) */
+.badge {
+  display: inline-block;
+  background-color: var(--primary, #006C66);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px; /* 胶囊形状 */
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-right: 10px;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+}
+
+.card-links a {
+  font-size: 0.9rem;
+  color: var(--primary, #006C66);
+  font-weight: 600;
+  margin-right: 12px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.card-links a:hover {
+  text-decoration: underline;
+  color: #004d49;
+}
+
+/* ---------------------------
+   3. Service 列表样式 (清单)
+   --------------------------- */
+h2#service + ul {
+  list-style: none;
+  padding-left: 10px;
+}
+
+h2#service + ul li {
+  position: relative;
+  padding-left: 28px; /* 给图标留位置 */
+  margin-bottom: 12px;
+  color: #444;
+  line-height: 1.6;
+}
+
+/* 使用 FontAwesome 的对勾图标 */
+h2#service + ul li::before {
+  content: "\f00c"; /* check 图标代码 */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: var(--primary, #006C66);
+  position: absolute;
+  left: 0;
+  top: 3px;
+  font-size: 1rem;
+}
+
+/* ===========================
+   侧边栏地图挂件样式
+   =========================== */
+.sidebar-map {
+  margin-top: auto; /* 关键：这会让地图自动被推到侧边栏的最底部 */
+  padding-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* 加一条淡淡的分割线 */
+  text-align: center; /* 让地图居中 */
+  width: 100%;
+  overflow: hidden; /* 防止地图太大撑破布局 */
+}
+
+/* 针对 RevolverMaps 的 Canvas 进行强制缩放适配 */
+.sidebar-map canvas {
+  max-width: 100% !important;
+  height: auto !important;
+}
