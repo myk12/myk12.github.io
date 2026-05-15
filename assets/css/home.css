@@ -233,13 +233,14 @@ h2 {
   overflow-y: auto; /* 如果侧边栏内容太多，允许内部滚动 */
   
   /* 动画过渡效果 */
-  transition: margin-left 0.3s ease-in-out; 
+  transition: margin-left 0.3s ease-in-out, transform 0.3s ease-in-out; 
   z-index: 100;     /* 保证它在层级上方 */
 }
 
 /* 当侧边栏被收起时的样式 */
 .sidebar.collapsed {
   margin-left: -300px; /* 通过负边距把它藏到屏幕左边去 */
+  transform: translateX(-100%);
 }
 
 /* ===========================
@@ -253,8 +254,9 @@ h2 {
   
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 8px 12px;
+  border-radius: 999px;
+  width: 42px;
+  height: 42px;
   cursor: pointer;
   font-size: 1.2rem;
   color: var(--primary);
@@ -266,6 +268,11 @@ h2 {
 #sidebar-toggle:hover {
   background: white;
   color: var(--accent);
+}
+
+#sidebar-toggle:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.35);
+  outline-offset: 2px;
 }
 
 /* ===========================
@@ -427,4 +434,44 @@ h2#service + ul li::before {
 .sidebar-map canvas {
   max-width: 100% !important;
   height: auto !important;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(300px, 84vw);
+    height: 100vh;
+    padding: 72px 24px 30px;
+    text-align: left;
+    align-items: flex-start;
+    box-shadow: 12px 0 30px rgba(0, 0, 0, 0.18);
+    transform: translateX(0);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sidebar.collapsed {
+    margin-left: 0;
+    transform: translateX(-100%);
+  }
+
+  #sidebar-toggle {
+    top: 14px;
+    left: 14px;
+    background: white;
+  }
+
+  .content-area {
+    min-height: 100vh;
+    padding: 72px 20px 30px;
+  }
+
+  .mobile-header h2 {
+    margin-top: 0;
+  }
 }

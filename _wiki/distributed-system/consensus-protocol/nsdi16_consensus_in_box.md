@@ -11,7 +11,7 @@ affiliation:
     - ETH Zurich
     - IBM Research
 date: 2025-10-24
-tag: [consensus, paxos, distributed-systems]
+tags: [consensus, paxos, distributed-systems]
 ---
 
 ::star ***This paper shows how to implement consensus protocols in programmable network hardware to achieve low-latency and high-throughput coordination in distributed systems.***
@@ -41,5 +41,4 @@ tag: [consensus, paxos, distributed-systems]
 > Building upon these  advances, the following question arises: could agreement be made a property of the network rather than  implementing it at the application level? Given the  current trade off between complexity of operations and  the achievable throughput of middleboxes, the third goal  of this work is to explore how to push down agreement  protocols into the network in an efficient manner.
 
 > TCP gives very strong guarantees to the application level,  but is very conservative about the guarantees provided by  the underlying network. Unlike the Internet, datacenter  networks have well-defined topologies, capacities, and  set of network devices. These properties, combined with  knowledge about the application, allow us to tailor the  TCP protocol and reduce the latency even further without  giving up any of the guarantees provided by TCP.
-
 

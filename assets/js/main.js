@@ -15,4 +15,41 @@ window.addEventListener("load", () => {
   });
 });
 
+// Floating sidebar toggle
+document.addEventListener("DOMContentLoaded", () => {
+  const sidebar = document.getElementById("mySidebar");
+  const toggle = document.getElementById("sidebar-toggle");
+  const icon = toggle?.querySelector("i");
+  const mobileQuery = window.matchMedia("(max-width: 768px)");
+
+  if (!sidebar || !toggle) return;
+
+  const setCollapsed = (collapsed) => {
+    sidebar.classList.toggle("collapsed", collapsed);
+    toggle.setAttribute("aria-expanded", String(!collapsed));
+
+    if (icon) {
+      icon.classList.toggle("fa-bars", collapsed);
+      icon.classList.toggle("fa-times", !collapsed);
+    }
+  };
+
+  const syncForViewport = () => {
+    setCollapsed(mobileQuery.matches);
+  };
+
+  syncForViewport();
+
+  toggle.addEventListener("click", () => {
+    setCollapsed(!sidebar.classList.contains("collapsed"));
+  });
+
+  sidebar.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      if (mobileQuery.matches) setCollapsed(true);
+    });
+  });
+
+  mobileQuery.addEventListener("change", syncForViewport);
+});
 

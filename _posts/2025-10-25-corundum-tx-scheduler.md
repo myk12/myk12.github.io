@@ -4,7 +4,7 @@ title: "Understanding Corundum FPGA NIC - TX Scheduler"
 date: 2025-10-24 10:00:00 +0000
 author: Yuke Ma
 categories: [Network, Systems, FPGA]
-tags: [fpag, corundum, smartnic]
+tags: [fpga, corundum, smartnic]
 ---
 
 # TX Scheduler (`tx_scheduler.v`) Documentation
@@ -150,4 +150,3 @@ The `tx_scheduler` module is a critical component of the Corundum FPGA NIC archi
 - Scheduling and prioritizing packet transmissions based on defined policies.
 - Sending transmit responses back to the FPGA logic.        
 - Providing status and control via the AXI-Lite interface.
-
