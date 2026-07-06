@@ -1,0 +1,106 @@
+backend:
+  name: github
+  repo: myk12/myk12.github.io
+  branch: main
+  # For production login, configure a GitHub OAuth app/proxy and uncomment:
+  # base_url: https://your-oauth-proxy.example.com
+
+local_backend: true
+publish_mode: editorial_workflow
+
+site_url: https://myk12.github.io
+display_url: https://myk12.github.io
+logo_url: /assets/img/me.jpg
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
+collections:
+  - name: "posts"
+    label: "Blog Posts"
+    label_singular: "Blog Post"
+    folder: "_posts"
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{year}}-{{month}}-{{day}} · {{title}}"
+    sortable_fields: ["date", "title", "author"]
+    view_filters:
+      - label: "FPGA"
+        field: "tags"
+        pattern: "fpga"
+      - label: "Systems"
+        field: "categories"
+        pattern: "Systems"
+    fields:
+      - { label: "Layout", name: "layout", widget: "hidden", default: "post" }
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD HH:mm:ss Z" }
+      - { label: "Author", name: "author", widget: "string", default: "Yuke Ma" }
+      - label: "Categories"
+        name: "categories"
+        widget: "list"
+        required: false
+        default: ["Systems"]
+        field: { label: "Category", name: "category", widget: "string" }
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+        field: { label: "Tag", name: "tag", widget: "string" }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "wiki"
+    label: "Reading Notes"
+    label_singular: "Reading Note"
+    folder: "_wiki"
+    create: true
+    delete: true
+    nested:
+      depth: 4
+      summary: "{{title}}"
+    path: "{{topic}}/{{slug}}"
+    slug: "{{slug}}"
+    summary: "{{conference}} · {{title}}"
+    sortable_fields: ["date", "title", "conference"]
+    view_filters:
+      - label: "Consensus"
+        field: "tags"
+        pattern: "consensus"
+      - label: "FPGA"
+        field: "tags"
+        pattern: "fpga"
+    fields:
+      - { label: "Layout", name: "layout", widget: "hidden", default: "doc" }
+      - { label: "Title", name: "title", widget: "string" }
+      - label: "Topic Path"
+        name: "topic"
+        widget: "string"
+        hint: "Folder under _wiki, e.g. distributed-system/consensus-protocol or fpga."
+        default: "reading"
+      - { label: "Venue / Conference", name: "conference", widget: "string", required: false, hint: "Example: OSDI'16, NSDI'24, SIGCOMM'25." }
+      - { label: "Date", name: "date", widget: "date", format: "YYYY-MM-DD" }
+      - label: "Authors"
+        name: "authors"
+        widget: "list"
+        required: false
+        field: { label: "Author", name: "author", widget: "string" }
+      - label: "Affiliations"
+        name: "affiliation"
+        widget: "list"
+        required: false
+        field: { label: "Affiliation", name: "affiliation_item", widget: "string" }
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+        field: { label: "Tag", name: "tag", widget: "string" }
+      - { label: "PDF URL", name: "pdf", widget: "string", required: false }
+      - { label: "Code URL", name: "code", widget: "string", required: false }
+      - { label: "Reading Status", name: "status", widget: "select", required: false, options: ["to-read", "reading", "read", "reference"] }
+      - { label: "Body", name: "body", widget: "markdown" }

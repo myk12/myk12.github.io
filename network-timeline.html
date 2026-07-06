@@ -1,0 +1,953 @@
+---
+title: "A History of Computer Networks"
+permalink: /blog/network-timeline/
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A History of Computer Networks | Yuke Ma</title>
+<meta name="description" content="A horizontal journey through computer network systems, one era per page, told through classic papers styled as posters.">
+<style>
+:root {
+  --accent: #006C66;
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --text: #1b1b1b;
+  --muted: #6b7280;
+  --line: #e4e6e3;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Code", ui-monospace, Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--sans);
+  background: #0c0c0c;
+  color: var(--text);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration: none; }
+
+/* =================== CHROME (auto-hiding) =================== */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  background: rgba(250,250,248,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 28px 0;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
+}
+body.hide-chrome .topbar { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+.topbar-row {
+  display: flex; align-items: baseline; gap: 20px;
+  max-width: 1360px; margin: 0 auto;
+}
+.brand { font-family: var(--mono); font-size: 0.8rem; font-weight: 600; color: var(--text); }
+.brand span { color: var(--accent); transition: color 0.4s ease; }
+.topbar-row .page-title { font-size: 0.85rem; color: var(--muted); font-weight: 400; display: none; }
+@media (min-width: 700px) { .topbar-row .page-title { display: block; } }
+.back-link { margin-left: auto; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+.back-link:hover { color: var(--accent); }
+
+/* thin progress strip shown while chrome is hidden */
+.peek {
+  position: fixed; top: 0; left: 0; height: 3px; z-index: 60;
+  background: var(--accent); width: 0;
+  opacity: 0; transition: opacity 0.4s ease, width 0.45s ease, background 0.4s ease;
+}
+body.hide-chrome .peek { opacity: 0.85; }
+
+/* =================== TIMELINE NAV =================== */
+.tl-nav { max-width: 1360px; margin: 0 auto; padding: 18px 8px 0; position: relative; }
+.tl-track { display: flex; justify-content: space-between; position: relative; padding-bottom: 16px; }
+.tl-track::before {
+  content: ""; position: absolute; left: 4%; right: 4%; top: 7px;
+  height: 2px; background: var(--line); border-radius: 2px;
+}
+.tl-track .fill {
+  position: absolute; left: 4%; top: 7px; height: 2px;
+  background: var(--accent); border-radius: 2px;
+  width: 0;
+  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease;
+}
+.tl-node {
+  position: relative; z-index: 2; background: none; border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  font-family: var(--mono); color: var(--muted);
+  flex: 1;
+}
+.tl-node .dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--line);
+  transition: all 0.3s ease;
+}
+.tl-node .lbl { font-size: 0.68rem; letter-spacing: 0.04em; transition: color 0.3s ease; white-space: nowrap; }
+.tl-node .era-name { font-size: 0.6rem; color: transparent; transition: color 0.3s ease; display: none; }
+@media (min-width: 900px) { .tl-node .era-name { display: block; } }
+.tl-node:hover .dot { border-color: var(--accent); }
+.tl-node:hover .lbl { color: var(--accent); }
+.tl-node.active .dot {
+  background: var(--accent); border-color: var(--accent);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+.tl-node.active .lbl { color: var(--accent); font-weight: 700; }
+.tl-node.active .era-name { color: var(--muted); }
+.tl-node.passed .dot { border-color: var(--accent); background: var(--accent); }
+
+/* =================== SLIDES =================== */
+.stage { position: fixed; inset: 0; overflow: hidden; }
+.slides { display: flex; height: 100%; transition: transform 0.55s cubic-bezier(0.65, 0, 0.35, 1); }
+.slide {
+  flex: 0 0 100%; height: 100%;
+  overflow-y: auto; overflow-x: hidden;
+  padding: 150px 32px 70px;
+  background-size: cover;
+  background-position: center;
+  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.25) transparent;
+}
+.slide::-webkit-scrollbar { width: 7px; }
+.slide::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 4px; }
+.slide-inner { max-width: 1360px; margin: 0 auto; }
+
+.era-head { margin-bottom: 40px; max-width: 720px; }
+.era-head .range { font-family: var(--mono); font-size: 0.74rem; color: var(--era-light); letter-spacing: 0.2em; }
+.era-head .range::before { content: "// "; opacity: 0.6; }
+.era-head h2 {
+  font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800;
+  letter-spacing: -0.02em; line-height: 1.12; margin: 8px 0 12px;
+  color: #fff;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.45);
+}
+.era-head p {
+  color: rgba(255,255,255,0.78); font-size: 1rem; line-height: 1.65;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.4);
+}
+.era-head .count {
+  display: inline-block; margin-top: 14px;
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em;
+  color: var(--era-light); border: 1px solid color-mix(in srgb, var(--era-light) 45%, transparent);
+  border-radius: 999px; padding: 3px 12px;
+}
+.era-head .count::after { content: " \2193 scroll"; opacity: 0.6; }
+
+/* =================== POSTER GRID =================== */
+.posters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 34px 30px;
+  padding-bottom: 30px;
+}
+@media (max-width: 640px) { .posters { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); } }
+
+.poster {
+  width: 100%; aspect-ratio: 2 / 3;
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 14px;
+  position: relative; overflow: hidden; cursor: pointer;
+  display: flex; flex-direction: column;
+  padding: 22px 20px 16px;
+  box-shadow: 0 18px 50px -20px rgba(0,0,0,0.55);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  animation: float 7s ease-in-out infinite;
+}
+.poster:nth-child(3n+1) { animation-delay: 0s; }
+.poster:nth-child(3n+2) { animation-delay: -2.3s; }
+.poster:nth-child(3n)   { animation-delay: -4.6s; }
+.poster:nth-child(even) { margin-top: 30px; }
+@media (max-width: 640px) { .poster:nth-child(even) { margin-top: 0; } }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.poster:hover {
+  animation-play-state: paused;
+  transform: translateY(-14px) rotate(-0.6deg);
+  box-shadow: 0 34px 70px -22px rgba(0,0,0,0.65);
+}
+@media (prefers-reduced-motion: reduce) {
+  .poster { animation: none; }
+  .slides { transition: none; }
+}
+
+.poster .studio {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--era); text-align: center;
+  margin-bottom: 8px;
+}
+.poster .big-year {
+  font-family: var(--mono); font-weight: 800; text-align: center;
+  font-size: 3.6rem; line-height: 1;
+  color: transparent; -webkit-text-stroke: 1.5px var(--era);
+  opacity: 0.35; margin-bottom: 10px; user-select: none;
+}
+.poster .p-title {
+  font-size: 1.04rem; font-weight: 750; line-height: 1.3;
+  letter-spacing: -0.01em; text-align: center;
+  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+}
+.poster .p-divider { width: 38px; height: 2px; background: var(--era); opacity: 0.55; margin: 11px auto; }
+.poster .p-authors {
+  font-size: 0.7rem; color: var(--muted); text-align: center;
+  font-style: italic; line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.poster .p-authors::before {
+  content: "dir. "; font-style: normal; font-family: var(--mono);
+  font-size: 0.6rem; color: var(--era);
+}
+.poster.event .p-authors::before { content: ""; }
+
+/* artwork strip fills the leftover space */
+.poster .p-img {
+  flex: 1 1 auto; min-height: 56px;
+  margin: 14px 0 12px;
+  border-radius: 9px;
+  background-size: cover; background-position: center;
+  border: 1px solid var(--line);
+  filter: saturate(0.92);
+  transition: filter 0.3s ease;
+}
+.poster:hover .p-img { filter: saturate(1.05); }
+
+.poster .p-bottom {
+  padding-top: 10px; border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--mono); font-size: 0.62rem; color: var(--muted);
+  letter-spacing: 0.06em;
+}
+.poster .p-bottom .v { color: var(--era); font-weight: 700; }
+.poster.event { background: color-mix(in srgb, var(--era) 5%, #ffffff); }
+
+/* hover / tap overlay */
+.poster .overlay {
+  position: absolute; inset: 0; padding: 24px 22px;
+  background: linear-gradient(175deg,
+    color-mix(in srgb, var(--era) 86%, #000),
+    color-mix(in srgb, var(--era) 40%, #000));
+  color: #fff; display: flex; flex-direction: column;
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.poster:hover .overlay, .poster.open .overlay { opacity: 1; }
+.overlay .o-year { font-family: var(--mono); font-size: 0.7rem; opacity: 0.8; margin-bottom: 10px; }
+.overlay .o-note { font-size: 0.88rem; line-height: 1.6; }
+.overlay .o-link {
+  margin-top: auto; font-family: var(--mono); font-size: 0.7rem;
+  color: #fff; letter-spacing: 0.1em;
+  border: 1px solid rgba(255,255,255,0.45); border-radius: 8px;
+  padding: 8px 12px; text-align: center;
+  transition: background 0.25s ease;
+}
+.overlay .o-link:hover { background: rgba(255,255,255,0.15); }
+
+/* =================== ARROWS / STATUS (auto-hiding) =================== */
+.arrow {
+  position: fixed; top: 50%; transform: translateY(-50%); z-index: 40;
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.9);
+  color: #333; font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.35s ease;
+  backdrop-filter: blur(4px);
+}
+.arrow:hover { background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,0.3); }
+.arrow[disabled] { opacity: 0.2; pointer-events: none; }
+.arrow.prev { left: 16px; }
+.arrow.next { right: 16px; }
+body.hide-chrome .arrow { opacity: 0; pointer-events: none; }
+@media (max-width: 700px) { .arrow { display: none; } }
+
+.statusbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  border-top: 1px solid var(--line);
+  background: rgba(250,250,248,0.92);
+  backdrop-filter: blur(12px);
+  padding: 10px 28px; display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--mono); font-size: 0.66rem; color: var(--muted);
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
+}
+body.hide-chrome .statusbar { transform: translateY(100%); opacity: 0; pointer-events: none; }
+.statusbar .hint { display: none; }
+@media (min-width: 700px) { .statusbar .hint { display: block; } }
+.statusbar kbd {
+  border: 1px solid var(--line); border-radius: 4px; padding: 0 5px;
+  font-family: var(--mono); font-size: 0.62rem; background: var(--surface);
+}
+
+/* touch devices: chrome never hides */
+@media (hover: none) {
+  body.hide-chrome .topbar, body.hide-chrome .statusbar { transform: none; opacity: 1; pointer-events: auto; }
+  body.hide-chrome .peek { opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="peek" id="peek"></div>
+
+<header class="topbar" id="topbar">
+  <div class="topbar-row">
+    <a class="brand" href="{{ '/blog.html' | relative_url }}"><span>~/</span>net-history</a>
+    <span class="page-title">Six decades of networking, told through classic papers</span>
+    <a class="back-link" href="{{ '/blog.html' | relative_url }}">cd ../blog</a>
+  </div>
+  <nav class="tl-nav" aria-label="Era timeline">
+    <div class="tl-track" id="tlTrack">
+      <div class="fill" id="tlFill"></div>
+      <button class="tl-node" data-idx="0"><span class="dot"></span><span class="lbl">'60s–70s</span><span class="era-name">Packet Switching</span></button>
+      <button class="tl-node" data-idx="1"><span class="dot"></span><span class="lbl">1980s</span><span class="era-name">Principles</span></button>
+      <button class="tl-node" data-idx="2"><span class="dot"></span><span class="lbl">1990s</span><span class="era-name">Scaling</span></button>
+      <button class="tl-node" data-idx="3"><span class="dot"></span><span class="lbl">2000s</span><span class="era-name">SDN &amp; Overlays</span></button>
+      <button class="tl-node" data-idx="4"><span class="dot"></span><span class="lbl">2010s</span><span class="era-name">Datacenters</span></button>
+      <button class="tl-node" data-idx="5"><span class="dot"></span><span class="lbl">2020s</span><span class="era-name">Optics &amp; AI</span></button>
+    </div>
+  </nav>
+</header>
+
+<div class="stage">
+  <button class="arrow prev" id="prevBtn" aria-label="Previous era">&#8592;</button>
+  <button class="arrow next" id="nextBtn" aria-label="Next era">&#8594;</button>
+
+  <div class="slides" id="slides">
+
+    <section class="slide" style="--era:#B45309; --era-light:#F59E0B;
+      background-image: linear-gradient(160deg, rgba(41,22,4,0.86), rgba(24,12,2,0.94)),
+      url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=2400&q=80');">
+      <div class="slide-inner">
+        <div class="era-head">
+          <div class="range">1960s–1970s</div>
+          <h2>The Birth of Packet Switching</h2>
+          <p>Cold-War resilience concerns and time-sharing computers converge: data no longer needs a dedicated circuit — it can travel in packets.</p>
+          <span class="count">4 milestones</span>
+        </div>
+        <div class="posters">
+
+          <div class="poster" data-note="/paper-notes/baran-1964-distributed-communications/">
+            <div class="studio">A RAND Production</div>
+            <div class="big-year">1964</div>
+            <div class="p-title">On Distributed Communications Networks</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Paul Baran</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1545987796-200677ee1011?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">RAND</span><span>REPORT</span></div>
+            <div class="overlay"><div class="o-year">1964 · RAND Report</div>
+              <p class="o-note">Proposed breaking messages into blocks routed independently over a redundant mesh — packet switching before the name existed, motivated by surviving nuclear attack.</p>
+              <a class="o-link" href="/paper-notes/baran-1964-distributed-communications/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster event" data-note="/paper-notes/arpanet-1969-first-message/">
+            <div class="studio">Historical Event</div>
+            <div class="big-year">1969</div>
+            <div class="p-title">ARPANET Sends Its First Message</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">UCLA → SRI</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1461988320302-91bde64fc8e4?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">EVENT</span><span>ARPANET</span></div>
+            <div class="overlay"><div class="o-year">1969 · ARPANET, historical event</div>
+              <p class="o-note">UCLA attempts to send "LOGIN" to SRI; the system crashes after "LO". The internet's first message is, fittingly, truncated.</p>
+              <a class="o-link" href="/paper-notes/arpanet-1969-first-message/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/cerf-kahn-1974-tcp/">
+            <div class="studio">An IEEE Picture</div>
+            <div class="big-year">1974</div>
+            <div class="p-title">A Protocol for Packet Network Intercommunication</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Vinton Cerf, Robert Kahn</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">IEEE T-COM</span><span>TCP</span></div>
+            <div class="overlay"><div class="o-year">1974 · IEEE Transactions on Communications</div>
+              <p class="o-note">The TCP paper. Introduced gateways and a common host-to-host protocol so heterogeneous networks could interconnect — the intellectual foundation of the Internet.</p>
+              <a class="o-link" href="/paper-notes/cerf-kahn-1974-tcp/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/metcalfe-1976-ethernet/">
+            <div class="studio">A Xerox PARC Production</div>
+            <div class="big-year">1976</div>
+            <div class="p-title">Ethernet: Distributed Packet Switching for Local Computer Networks</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Robert Metcalfe, David Boggs</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">CACM</span><span>LAN</span></div>
+            <div class="overlay"><div class="o-year">1976 · Communications of the ACM</div>
+              <p class="o-note">A shared coaxial cable, carrier sensing, and randomized backoff. Fifty years later, the name survives every technology inside it being replaced.</p>
+              <a class="o-link" href="/paper-notes/metcalfe-1976-ethernet/">OPEN MY NOTES →</a></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" style="--era:#15803D; --era-light:#4ADE80;
+      background-image: linear-gradient(160deg, rgba(4,32,16,0.87), rgba(2,18,10,0.94)),
+      url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=2400&q=80');">
+      <div class="slide-inner">
+        <div class="era-head">
+          <div class="range">1980s</div>
+          <h2>Principles &amp; Protocols</h2>
+          <p>The Internet gets its architecture — and its philosophy. The decade that decided what belongs in the network and what belongs at the ends.</p>
+          <span class="count">6 milestones</span>
+        </div>
+        <div class="posters">
+
+          <div class="poster event" data-note="/paper-notes/rfc-1981-ip-tcp/">
+            <div class="studio">Historical Event</div>
+            <div class="big-year">1981</div>
+            <div class="p-title">RFC 791 &amp; 793 Standardize IP and TCP</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Jon Postel, ed.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">EVENT</span><span>RFC</span></div>
+            <div class="overlay"><div class="o-year">1981 · IETF RFC series</div>
+              <p class="o-note">Postel's specifications split the stack into IP and TCP. On January 1, 1983 ("flag day"), ARPANET cuts over to TCP/IP for good.</p>
+              <a class="o-link" href="/paper-notes/rfc-1981-ip-tcp/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/saltzer-1984-end-to-end/">
+            <div class="studio">An MIT Production</div>
+            <div class="big-year">1984</div>
+            <div class="p-title">End-to-End Arguments in System Design</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Jerome Saltzer, David Reed, David Clark</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">ACM TOCS</span><span>E2E</span></div>
+            <div class="overlay"><div class="o-year">1984 · ACM Transactions on Computer Systems</div>
+              <p class="o-note">Functions should live at the endpoints unless the network can do them completely and cheaply. The most-cited design principle in networking — and the most argued about.</p>
+              <a class="o-link" href="/paper-notes/saltzer-1984-end-to-end/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/mockapetris-1988-dns/">
+            <div class="studio">A SIGCOMM Production</div>
+            <div class="big-year">1988</div>
+            <div class="p-title">Development of the Domain Name System</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Paul Mockapetris, Kevin Dunlap</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1484662020986-75935d2ebc66?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>DNS</span></div>
+            <div class="overlay"><div class="o-year">1988 · ACM SIGCOMM</div>
+              <p class="o-note">Replaced a single HOSTS.TXT file with a delegated, hierarchical, cached distributed database. Still resolving your queries today.</p>
+              <a class="o-link" href="/paper-notes/mockapetris-1988-dns/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/jacobson-1988-congestion/">
+            <div class="studio">A SIGCOMM Production</div>
+            <div class="big-year">1988</div>
+            <div class="p-title">Congestion Avoidance and Control</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Van Jacobson, Michael Karels</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>CC</span></div>
+            <div class="overlay"><div class="o-year">1988 · ACM SIGCOMM</div>
+              <p class="o-note">Written after congestion collapse nearly froze the 1986 Internet. Slow start, AIMD, RTT estimation — the congestion control canon, and arguably the paper that saved the Internet.</p>
+              <a class="o-link" href="/paper-notes/jacobson-1988-congestion/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/clark-1988-design-philosophy/">
+            <div class="studio">A SIGCOMM Production</div>
+            <div class="big-year">1988</div>
+            <div class="p-title">The Design Philosophy of the DARPA Internet Protocols</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">David Clark</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>ARCH</span></div>
+            <div class="overlay"><div class="o-year">1988 · ACM SIGCOMM</div>
+              <p class="o-note">A retrospective on why the Internet looks the way it does: survivability first, accountability last. Explains every design wart you've ever cursed at.</p>
+              <a class="o-link" href="/paper-notes/clark-1988-design-philosophy/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/demers-1989-fair-queueing/">
+            <div class="studio">A SIGCOMM Production</div>
+            <div class="big-year">1989</div>
+            <div class="p-title">Analysis and Simulation of a Fair Queueing Algorithm</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Alan Demers, Srinivasan Keshav, Scott Shenker</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>FQ</span></div>
+            <div class="overlay"><div class="o-year">1989 · ACM SIGCOMM</div>
+              <p class="o-note">Made per-flow fairness a router primitive. The intellectual ancestor of every scheduling and QoS mechanism since.</p>
+              <a class="o-link" href="/paper-notes/demers-1989-fair-queueing/">OPEN MY NOTES →</a></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" style="--era:#2563EB; --era-light:#60A5FA;
+      background-image: linear-gradient(160deg, rgba(4,16,44,0.85), rgba(2,10,28,0.94)),
+      url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2400&q=80');">
+      <div class="slide-inner">
+        <div class="era-head">
+          <div class="range">1990s</div>
+          <h2>Scaling the Internet</h2>
+          <p>The web arrives and traffic explodes. The decade of keeping a research network alive as it becomes global infrastructure.</p>
+          <span class="count">4 milestones</span>
+        </div>
+        <div class="posters">
+
+          <div class="poster event" data-note="/paper-notes/www-1991/">
+            <div class="studio">Historical Event</div>
+            <div class="big-year">1991</div>
+            <div class="p-title">The World Wide Web Goes Public</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Tim Berners-Lee, CERN</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">EVENT</span><span>WWW</span></div>
+            <div class="overlay"><div class="o-year">1991 · CERN, historical event</div>
+              <p class="o-note">Berners-Lee releases WWW from CERN. Within five years, the web transforms the Internet from an academic tool into society's communication substrate — and its traffic pattern.</p>
+              <a class="o-link" href="/paper-notes/www-1991/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/floyd-1993-red/">
+            <div class="studio">An IEEE/ACM Picture</div>
+            <div class="big-year">1993</div>
+            <div class="p-title">Random Early Detection Gateways for Congestion Avoidance</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Sally Floyd, Van Jacobson</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">ToN</span><span>RED</span></div>
+            <div class="overlay"><div class="o-year">1993 · IEEE/ACM Transactions on Networking</div>
+              <p class="o-note">Routers should drop packets before queues fill. RED opened the field of active queue management — a debate still running through CoDel and PIE today.</p>
+              <a class="o-link" href="/paper-notes/floyd-1993-red/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster event" data-note="/paper-notes/cidr-bgp4-1994/">
+            <div class="studio">Historical Event</div>
+            <div class="big-year">1994</div>
+            <div class="p-title">CIDR and BGP-4 Deploy</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">IETF</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1502134249126-9f3755a50d78?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">EVENT</span><span>BGP</span></div>
+            <div class="overlay"><div class="o-year">1994 · IETF, historical event</div>
+              <p class="o-note">Classless addressing and route aggregation rescue the Internet from address exhaustion and routing-table explosion. BGP-4 remains the Internet's routing protocol — for better or worse.</p>
+              <a class="o-link" href="/paper-notes/cidr-bgp4-1994/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/kohler-1999-click/">
+            <div class="studio">An SOSP Production</div>
+            <div class="big-year">1999</div>
+            <div class="p-title">The Click Modular Router</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Eddie Kohler, Robert Morris, Benjie Chen, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SOSP</span><span>SW-DP</span></div>
+            <div class="overlay"><div class="o-year">1999 · ACM SOSP</div>
+              <p class="o-note">A router as a graph of composable software elements. Made packet processing programmable and inspired two decades of software dataplanes.</p>
+              <a class="o-link" href="/paper-notes/kohler-1999-click/">OPEN MY NOTES →</a></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" style="--era:#7C3AED; --era-light:#A78BFA;
+      background-image: linear-gradient(160deg, rgba(26,10,46,0.86), rgba(16,6,30,0.94)),
+      url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=2400&q=80');">
+      <div class="slide-inner">
+        <div class="era-head">
+          <div class="range">2000s</div>
+          <h2>Overlays &amp; Rethinking Control</h2>
+          <p>If the network can't change, build on top of it — or take its control plane away. P2P systems flourish, and SDN is born.</p>
+          <span class="count">7 milestones</span>
+        </div>
+        <div class="posters">
+
+          <div class="poster" data-note="/paper-notes/stoica-2001-chord/">
+            <div class="studio">A SIGCOMM Production</div>
+            <div class="big-year">2001</div>
+            <div class="p-title">Chord: A Scalable Peer-to-peer Lookup Service</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Ion Stoica, Robert Morris, David Karger, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>DHT</span></div>
+            <div class="overlay"><div class="o-year">2001 · ACM SIGCOMM</div>
+              <p class="o-note">Consistent hashing on a ring: O(log N) lookup with no central authority. The DHT abstraction behind everything from BitTorrent trackers to Dynamo-style storage.</p>
+              <a class="o-link" href="/paper-notes/stoica-2001-chord/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/katabi-2002-xcp/">
+            <div class="studio">A SIGCOMM Production</div>
+            <div class="big-year">2002</div>
+            <div class="p-title">Congestion Control for High Bandwidth-Delay Product Networks</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Dina Katabi, Mark Handley, Charlie Rohrs</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>XCP</span></div>
+            <div class="overlay"><div class="o-year">2002 · ACM SIGCOMM</div>
+              <p class="o-note">Let routers tell senders exactly how to adjust. XCP never deployed, but explicit-feedback thinking echoes through DCTCP, HPCC, and modern datacenter transports.</p>
+              <a class="o-link" href="/paper-notes/katabi-2002-xcp/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/greenberg-2005-4d/">
+            <div class="studio">A CCR Feature</div>
+            <div class="big-year">2005</div>
+            <div class="p-title">A Clean Slate 4D Approach to Network Control and Management</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Albert Greenberg, Gisli Hjalmtysson, David Maltz, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">CCR</span><span>4D</span></div>
+            <div class="overlay"><div class="o-year">2005 · ACM SIGCOMM CCR</div>
+              <p class="o-note">Argued for ripping decision logic out of routers into a logically centralized plane. The blueprint SDN would follow.</p>
+              <a class="o-link" href="/paper-notes/greenberg-2005-4d/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/casado-2007-ethane/">
+            <div class="studio">A SIGCOMM Production</div>
+            <div class="big-year">2007</div>
+            <div class="p-title">Ethane: Taking Control of the Enterprise</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Martín Casado, Michael Freedman, Justin Pettit, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>PRE-SDN</span></div>
+            <div class="overlay"><div class="o-year">2007 · ACM SIGCOMM</div>
+              <p class="o-note">Centralized policy, dumb switches, flow-level control — deployed in a real campus network. The direct precursor to OpenFlow, and to Nicira.</p>
+              <a class="o-link" href="/paper-notes/casado-2007-ethane/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/mckeown-2008-openflow/">
+            <div class="studio">A CCR Feature</div>
+            <div class="big-year">2008</div>
+            <div class="p-title">OpenFlow: Enabling Innovation in Campus Networks</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Nick McKeown, Tom Anderson, Hari Balakrishnan, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">CCR</span><span>SDN</span></div>
+            <div class="overlay"><div class="o-year">2008 · ACM SIGCOMM CCR</div>
+              <p class="o-note">A pragmatic compromise — expose the flow table, keep the hardware. Turned software-defined networking from a position paper into an industry.</p>
+              <a class="o-link" href="/paper-notes/mckeown-2008-openflow/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/alfares-2008-fat-tree/">
+            <div class="studio">A SIGCOMM Production</div>
+            <div class="big-year">2008</div>
+            <div class="p-title">A Scalable, Commodity Data Center Network Architecture</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Mohammad Al-Fares, Alexander Loukissas, Amin Vahdat</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1591808216268-ce0b82787efe?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>FAT-TREE</span></div>
+            <div class="overlay"><div class="o-year">2008 · ACM SIGCOMM</div>
+              <p class="o-note">Fat-trees built from cheap merchant silicon can match big-iron routers. The paper that made Clos topologies the default language of datacenter networking.</p>
+              <a class="o-link" href="/paper-notes/alfares-2008-fat-tree/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/greenberg-2009-vl2/">
+            <div class="studio">A SIGCOMM Production</div>
+            <div class="big-year">2009</div>
+            <div class="p-title">VL2: A Scalable and Flexible Data Center Network</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Albert Greenberg, James Hamilton, Navendu Jain, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>VL2</span></div>
+            <div class="overlay"><div class="o-year">2009 · ACM SIGCOMM</div>
+              <p class="o-note">Valiant load balancing plus flat addressing gives every service the illusion of one big switch. Microsoft's answer to datacenter agility, informed by real traffic measurement.</p>
+              <a class="o-link" href="/paper-notes/greenberg-2009-vl2/">OPEN MY NOTES →</a></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" style="--era:#0E7490; --era-light:#22D3EE;
+      background-image: linear-gradient(160deg, rgba(3,28,36,0.86), rgba(2,16,22,0.94)),
+      url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=2400&q=80');">
+      <div class="slide-inner">
+        <div class="era-head">
+          <div class="range">2010s</div>
+          <h2>The Datacenter Decade</h2>
+          <p>Hyperscalers become the center of gravity. Networks get custom transports, programmable chips, and are co-designed with the applications they serve.</p>
+          <span class="count">8 milestones</span>
+        </div>
+        <div class="posters">
+
+          <div class="poster" data-note="/paper-notes/alizadeh-2010-dctcp/">
+            <div class="studio">A SIGCOMM Production</div>
+            <div class="big-year">2010</div>
+            <div class="p-title">Data Center TCP (DCTCP)</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Mohammad Alizadeh, Albert Greenberg, David Maltz, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>DCTCP</span></div>
+            <div class="overlay"><div class="o-year">2010 · ACM SIGCOMM</div>
+              <p class="o-note">Use ECN marks as a fine-grained congestion signal to keep queues near-empty. Defined the datacenter transport agenda for the decade.</p>
+              <a class="o-link" href="/paper-notes/alizadeh-2010-dctcp/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/jain-2013-b4/">
+            <div class="studio">A Google Production</div>
+            <div class="big-year">2013</div>
+            <div class="p-title">B4: Experience with a Globally-Deployed Software Defined WAN</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Sushant Jain, Alok Kumar, Subhasree Mandal, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>SD-WAN</span></div>
+            <div class="overlay"><div class="o-year">2013 · ACM SIGCOMM</div>
+              <p class="o-note">SDN leaves the lab: Google runs its inter-datacenter WAN at near-100% utilization with centralized traffic engineering. Proof that the ideas worked at planetary scale.</p>
+              <a class="o-link" href="/paper-notes/jain-2013-b4/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/bosshart-2014-p4/">
+            <div class="studio">A CCR Feature</div>
+            <div class="big-year">2014</div>
+            <div class="p-title">P4: Programming Protocol-Independent Packet Processors</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Pat Bosshart, Dan Daly, Glen Gibb, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">CCR</span><span>P4</span></div>
+            <div class="overlay"><div class="o-year">2014 · ACM SIGCOMM CCR</div>
+              <p class="o-note">If OpenFlow opened the flow table, P4 opened the parser and pipeline. Switches become compile targets — enabling in-network computing from telemetry to consensus offload.</p>
+              <a class="o-link" href="/paper-notes/bosshart-2014-p4/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/singh-2015-jupiter-rising/">
+            <div class="studio">A Google Production</div>
+            <div class="big-year">2015</div>
+            <div class="p-title">Jupiter Rising: A Decade of Clos Topologies and Centralized Control</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Arjun Singh, Joon Ong, Amit Agarwal, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>JUPITER</span></div>
+            <div class="overlay"><div class="o-year">2015 · ACM SIGCOMM</div>
+              <p class="o-note">Five generations of datacenter fabric in one retrospective, scaling to 1.3 Pbps. The rare paper that shows how production networks actually evolve.</p>
+              <a class="o-link" href="/paper-notes/singh-2015-jupiter-rising/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/zhu-2015-dcqcn/">
+            <div class="studio">A Microsoft Production</div>
+            <div class="big-year">2015</div>
+            <div class="p-title">Congestion Control for Large-Scale RDMA Deployments</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Yibo Zhu, Haggai Eran, Daniel Firestone, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>DCQCN</span></div>
+            <div class="overlay"><div class="o-year">2015 · ACM SIGCOMM</div>
+              <p class="o-note">Made RoCEv2 deployable at cloud scale by taming PFC's pathologies. RDMA moves from HPC niche to the backbone of storage and, later, AI training.</p>
+              <a class="o-link" href="/paper-notes/zhu-2015-dcqcn/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/cardwell-2016-bbr/">
+            <div class="studio">A Google Production</div>
+            <div class="big-year">2016</div>
+            <div class="p-title">BBR: Congestion-Based Congestion Control</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Neal Cardwell, Yuchung Cheng, C. Stephen Gunn, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">ACM QUEUE</span><span>BBR</span></div>
+            <div class="overlay"><div class="o-year">2016 · ACM Queue</div>
+              <p class="o-note">Stop treating loss as the signal; model the pipe's bandwidth and RTT instead. Thirty years after Jacobson, congestion control gets its biggest rethink — deployed on YouTube.</p>
+              <a class="o-link" href="/paper-notes/cardwell-2016-bbr/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/langley-2017-quic/">
+            <div class="studio">A Google Production</div>
+            <div class="big-year">2017</div>
+            <div class="p-title">The QUIC Transport Protocol: Design and Internet-Scale Deployment</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Adam Langley, Alistair Riddoch, Alyssa Wilk, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>QUIC</span></div>
+            <div class="overlay"><div class="o-year">2017 · ACM SIGCOMM</div>
+              <p class="o-note">A new transport in userspace over UDP, deployed to billions by shipping it in Chrome. Escaped protocol ossification — and became HTTP/3.</p>
+              <a class="o-link" href="/paper-notes/langley-2017-quic/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/firestone-2018-accelnet/">
+            <div class="studio">A Microsoft Production</div>
+            <div class="big-year">2018</div>
+            <div class="p-title">Azure Accelerated Networking: SmartNICs in the Public Cloud</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Daniel Firestone, Andrew Putnam, Sambhrama Mundkur, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">NSDI</span><span>SMARTNIC</span></div>
+            <div class="overlay"><div class="o-year">2018 · USENIX NSDI</div>
+              <p class="o-note">FPGA-based SmartNICs offload the host networking stack across the entire Azure fleet. Hardware-software co-design becomes the default playbook for cloud networking.</p>
+              <a class="o-link" href="/paper-notes/firestone-2018-accelnet/">OPEN MY NOTES →</a></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" style="--era:#DB2777; --era-light:#F472B6;
+      background-image: linear-gradient(160deg, rgba(40,6,26,0.86), rgba(24,4,16,0.94)),
+      url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=2400&q=80');">
+      <div class="slide-inner">
+        <div class="era-head">
+          <div class="range">2020s</div>
+          <h2>Optics, Offload &amp; the AI Era</h2>
+          <p>Moore's law slows while AI traffic explodes. The network reaches for optical switching and is co-designed with the training jobs running on top of it.</p>
+          <span class="count">5 milestones</span>
+        </div>
+        <div class="posters">
+
+          <div class="poster" data-note="/paper-notes/ballani-2020-sirius/">
+            <div class="studio">A Microsoft Production</div>
+            <div class="big-year">2020</div>
+            <div class="p-title">Sirius: A Flat Datacenter Network with Nanosecond Optical Switching</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Hitesh Ballani, Paolo Costa, Raphael Behrendt, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>OPTICS</span></div>
+            <div class="overlay"><div class="o-year">2020 · ACM SIGCOMM</div>
+              <p class="o-note">Nanosecond-granularity optical circuit switching across a flat datacenter. A glimpse of networks freed from electrical packet switches entirely.</p>
+              <a class="o-link" href="/paper-notes/ballani-2020-sirius/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/poutievski-2022-jupiter-evolving/">
+            <div class="studio">A Google Production</div>
+            <div class="big-year">2022</div>
+            <div class="p-title">Jupiter Evolving: Optical Circuit Switches and SDN in Production</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Leon Poutievski, Omid Mashayekhi, Joon Ong, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1591808216268-ce0b82787efe?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>OCS</span></div>
+            <div class="overlay"><div class="o-year">2022 · ACM SIGCOMM</div>
+              <p class="o-note">Optical circuit switches replace the spine layer in production — no more fabric-wide forklift upgrades. OCS jumps from research prototype to the world's largest network.</p>
+              <a class="o-link" href="/paper-notes/poutievski-2022-jupiter-evolving/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/wang-2023-topoopt/">
+            <div class="studio">An MIT Production</div>
+            <div class="big-year">2023</div>
+            <div class="p-title">TopoOpt: Co-optimizing Network Topology and Parallelization for ML</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Weiyang Wang, Moein Khazraee, Zhizhen Zhong, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">NSDI</span><span>ML-NET</span></div>
+            <div class="overlay"><div class="o-year">2023 · USENIX NSDI</div>
+              <p class="o-note">Reconfigure the physical topology to match each ML job's communication pattern. The network stops being a fixed substrate and becomes part of the training system.</p>
+              <a class="o-link" href="/paper-notes/wang-2023-topoopt/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/qian-2024-hpn/">
+            <div class="studio">An Alibaba Production</div>
+            <div class="big-year">2024</div>
+            <div class="p-title">Alibaba HPN: A Data Center Network for LLM Training</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Kun Qian, Yongqing Xi, Jiamin Cao, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>LLM</span></div>
+            <div class="overlay"><div class="o-year">2024 · ACM SIGCOMM</div>
+              <p class="o-note">A dual-plane, rail-optimized fabric purpose-built for LLM training traffic: few, fat, bursty flows that defeat classic ECMP assumptions.</p>
+              <a class="o-link" href="/paper-notes/qian-2024-hpn/">OPEN MY NOTES →</a></div>
+          </div>
+
+          <div class="poster" data-note="/paper-notes/gangidi-2024-meta-rdma/">
+            <div class="studio">A Meta Production</div>
+            <div class="big-year">2024</div>
+            <div class="p-title">RDMA over Ethernet for Distributed AI Training at Meta Scale</div>
+            <div class="p-divider"></div>
+            <div class="p-authors">Adithya Gangidi, Rui Miao, Shengbao Zheng, et al.</div>
+            <div class="p-img" style="background-image:url('https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=800&q=80')"></div>
+            <div class="p-bottom"><span class="v">SIGCOMM</span><span>AI-RDMA</span></div>
+            <div class="overlay"><div class="o-year">2024 · ACM SIGCOMM</div>
+              <p class="o-note">Operating RoCE fabrics for AI clusters with tens of thousands of GPUs. The 1988 congestion problem returns at 400 Gbps — and the story is far from over.</p>
+              <a class="o-link" href="/paper-notes/gangidi-2024-meta-rdma/">OPEN MY NOTES →</a></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<footer class="statusbar">
+  <span id="status">era 1 / 6</span>
+  <span class="hint">navigate with <kbd>&larr;</kbd> <kbd>&rarr;</kbd> · scroll down within an era · hover a poster, click to open my notes</span>
+  <span>curated by <a href="{{ '/' | relative_url }}">Yuke Ma</a></span>
+</footer>
+
+<script>
+(function () {
+  const slides = document.getElementById('slides');
+  const slideEls = [...slides.children];
+  const nodes = [...document.querySelectorAll('.tl-node')];
+  const fill = document.getElementById('tlFill');
+  const peek = document.getElementById('peek');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const status = document.getElementById('status');
+  const N = nodes.length;
+  let idx = 0;
+
+  function go(i) {
+    idx = Math.max(0, Math.min(N - 1, i));
+    slides.style.transform = 'translateX(-' + idx * 100 + '%)';
+    nodes.forEach((n, j) => {
+      n.classList.toggle('active', j === idx);
+      n.classList.toggle('passed', j < idx);
+    });
+    fill.style.width = (idx / (N - 1)) * 92 + '%';
+    peek.style.width = ((idx + 1) / N) * 100 + '%';
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === N - 1;
+    status.textContent = 'era ' + (idx + 1) + ' / ' + N;
+    const eraColor = slideEls[idx].style.getPropertyValue('--era').trim();
+    if (eraColor) document.body.style.setProperty('--accent', eraColor);
+    if (history.replaceState) history.replaceState(null, '', '#era-' + (idx + 1));
+    showChrome();
+  }
+
+  /* ---------- auto-hiding chrome ---------- */
+  const canHover = matchMedia('(hover: hover)').matches;
+  let hideTimer = null;
+  function hideChrome() { document.body.classList.add('hide-chrome'); }
+  function showChrome(sticky) {
+    document.body.classList.remove('hide-chrome');
+    clearTimeout(hideTimer);
+    if (!sticky && canHover) hideTimer = setTimeout(hideChrome, 2600);
+  }
+  if (canHover) {
+    addEventListener('mousemove', e => {
+      const nearTop = e.clientY <= 110;
+      const nearBottom = e.clientY >= innerHeight - 60;
+      const nearSide = e.clientX <= 90 || e.clientX >= innerWidth - 90;
+      if (nearTop || nearBottom || nearSide) showChrome();
+    }, { passive: true });
+    // keep visible while pointer is over the chrome itself
+    document.querySelectorAll('.topbar, .statusbar').forEach(el => {
+      el.addEventListener('mouseenter', () => showChrome(true));
+      el.addEventListener('mouseleave', () => showChrome());
+    });
+  }
+
+  nodes.forEach(n => n.addEventListener('click', () => go(+n.dataset.idx)));
+  prevBtn.addEventListener('click', () => go(idx - 1));
+  nextBtn.addEventListener('click', () => go(idx + 1));
+
+  addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') go(idx + 1);
+    if (e.key === 'ArrowLeft') go(idx - 1);
+  });
+
+  let sx = null, sy = null;
+  addEventListener('touchstart', e => {
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+  }, { passive: true });
+  addEventListener('touchend', e => {
+    if (sx === null) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.8) go(idx + (dx < 0 ? 1 : -1));
+    sx = null;
+  }, { passive: true });
+
+  /* posters: desktop click -> open notes; touch: first tap flips, link navigates */
+  document.querySelectorAll('.poster').forEach(p => {
+    p.addEventListener('click', e => {
+      if (e.target.closest('a')) return;
+      if (canHover) { window.location.href = p.dataset.note; return; }
+      document.querySelectorAll('.poster.open').forEach(q => { if (q !== p) q.classList.remove('open'); });
+      p.classList.toggle('open');
+    });
+  });
+
+  const m = location.hash.match(/^#era-(\d)$/);
+  go(m ? +m[1] - 1 : 0);
+})();
+</script>
+
+</body>
+</html>
